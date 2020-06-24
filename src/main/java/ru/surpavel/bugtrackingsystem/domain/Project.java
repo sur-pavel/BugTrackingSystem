@@ -2,9 +2,19 @@ package ru.surpavel.bugtrackingsystem.domain;
 
 public class Project extends TrackedObject {
 
-    public Project(String name) {
-        super(name);
-        // TODO Auto-generated constructor stub
+    private String file;
+
+    public Project(String file) {
+        super();
+        this.setFile(file);
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 
     

@@ -13,26 +13,21 @@ public abstract class TrackedObject {
     private int id;
 
     @Column
-    private String name;
+    private String theme;
     public int getId() {
         return id;
     }
-        
-    public TrackedObject(String name) {
-        super();
-        this.name = name;
-    }
-
+    
     public void setId(int id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTheme() {
+        return theme;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTheme(String name) {
+        this.theme = name;
     }
   
 }
