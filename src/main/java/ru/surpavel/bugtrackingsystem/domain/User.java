@@ -25,4 +25,8 @@ public class User extends TrackedObject{
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
     }
+    public String getTaskID() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
