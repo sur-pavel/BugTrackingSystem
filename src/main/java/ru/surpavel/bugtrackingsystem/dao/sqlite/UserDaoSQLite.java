@@ -16,7 +16,7 @@ import ru.surpavel.bugtrackingsystem.dao.DaoException;
 import ru.surpavel.bugtrackingsystem.domain.User;
 
 public class UserDaoSQLite implements UserDao{
-    public Connection c;
+    public Connection conn;
     public Statement stmt;
     public ResultSet resSet;
     private static final Logger log = LogManager.getLogger(UserDaoSQLite.class.getName());
@@ -25,14 +25,18 @@ public class UserDaoSQLite implements UserDao{
     public User create(User user) {
         log.debug("Creating " + user);
         try {
-            c = DriverManager.getConnection("jdbc:sqlite:bugtrackingsystem.sqlite");
-            stmt = c.createStatement();
+            conn = DriverManager.getConnection("jdbc:sqlite:bugtrackingsystem.sqlite");
+            stmt = conn.createStatement();
             String sql = new StringBuilder()
                     .append("INSERT INTO users (first_name, last_name, task_id) VALUES ('")
                     .append(user.getFirstName())                    
                     .append("', '" + user.getLastName())                    
                     .append("', '" + user.getTaskID() + "');")
                     .toString();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            conn.commit();
+            conn.close();
             log.info(user + " was created");
         } catch (SQLException e) {
             log.error("Can't create " + user, e);
