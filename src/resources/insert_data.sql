@@ -3,7 +3,7 @@ INSERT INTO projects (project_name , file) VALUES
     ('SECOND PROJECT', 'sProject.txt');
 
 
-INSERT INTO users (first_name, last_name, task_id, project_id) VALUES
+INSERT INTO users (first_name, last_name, task_id) VALUES
     ('JAMES', 'SMITH', 1),
     ('JOHN', 'JOHNSON', 1),
     ('ROBERT', 'WILLIAMS', 1),
