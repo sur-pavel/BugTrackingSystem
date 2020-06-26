@@ -2,38 +2,18 @@ package ru.surpavel.bugtrackingsystem.dao;
 
 import java.util.List;
 
-import ru.surpavel.bugtrackingsystem.domain.TrackedObject;
+import ru.surpavel.bugtrackingsystem.domain.Project;
 
-public class ProjectDao implements TrackedObjectDao {
+public interface ProjectDao {
 
-    @Override
-    public TrackedObject create(TrackedObject trackedObject) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    Project create(Project project);
 
-    @Override
-    public List<TrackedObject> findAll() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    List<Project> findAll();
 
-    @Override
-    public TrackedObject findById(int id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    Project findById(int id);
 
-    @Override
-    public TrackedObject update(TrackedObject trackedObject) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    Project update(Project project);
 
-    @Override
-    public void delete(int id) {
-        // TODO Auto-generated method stub
-
-    }
+    void delete(int id);
 
 }
