@@ -4,9 +4,16 @@ import java.util.List;
 
 public class User extends TrackedObject{
 
+    public User(int id, String firstName, String lastName) {
+        super();
+        super.setId(id);
+        FirstName = firstName;
+        LastName = lastName;
+    }
     private String FirstName; 
     private String LastName;
     private List<Task> tasks;
+    
     public String getFirstName() {
         return FirstName;
     }
