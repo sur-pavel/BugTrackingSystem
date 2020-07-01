@@ -1,7 +1,7 @@
 
 CREATE TABLE projects(
-project_id INTEGER PRIMARY KEY,
-project_name VARCHAR(50),
+id INTEGER PRIMARY KEY,
+name VARCHAR(50),
 file VARCHAR(100)
 );
 

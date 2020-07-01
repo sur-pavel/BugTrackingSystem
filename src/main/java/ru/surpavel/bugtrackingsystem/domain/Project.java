@@ -1,21 +1,73 @@
 package ru.surpavel.bugtrackingsystem.domain;
 
-public class Project extends TrackedObject {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    private String file;
+@Entity
+@Table(name = "projects")
+@XmlRootElement
+public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    public Project(String file) {
+    @Column
+    private String name;
+
+    public Project(String name) {
         super();
-        this.setFile(file);
+        this.name = name;
     }
 
-    public String getFile() {
-        return file;
+    public Project() {
     }
-
-    public void setFile(String file) {
-        this.file = file;
-    }
-
     
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Project other = (Project) obj;
+        if (id != other.id)
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Project [id=" + id + ", name=" + name + "]";
+    }
+
 }
