@@ -2,38 +2,34 @@ package ru.surpavel.bugtrackingsystem.domain;
 
 import java.util.List;
 
-public class User extends TrackedObject{
 
-    public User(int id, String firstName, String lastName) {
-        super();
-        super.setId(id);
-        FirstName = firstName;
-        LastName = lastName;
-    }
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@Entity
+@Table(name = "users")
+@XmlRootElement
+public class User{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column
     private String FirstName; 
+    
+    @Column
     private String LastName;
+    
+    @OneToMany(mappedBy = "task", cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private List<Task> tasks;
     
-    public String getFirstName() {
-        return FirstName;
-    }
-    public void setFirstName(String firstName) {
-        FirstName = firstName;
-    }
-    public String getLastName() {
-        return LastName;
-    }
-    public void setLastName(String lastName) {
-        LastName = lastName;
-    }
-    public List<Task> getTasks() {
-        return tasks;
-    }
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
-    public String getTaskID() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    
 }
