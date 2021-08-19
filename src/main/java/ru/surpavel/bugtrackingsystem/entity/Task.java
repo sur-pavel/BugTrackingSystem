@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "tasks")
+@Getters
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
