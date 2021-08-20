@@ -1,18 +1,22 @@
 package ru.surpavel.bugtrackingsystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tasks")
-@Getters
-public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+@NoArgsConstructor
+public class Task extends BaseEntity {
 
     @NotNull
     @Size(max = 50)
@@ -40,136 +44,27 @@ public class Task {
     @JsonIgnore
     private Project project;
 
-    public Task() {
-        super();
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Task task = (Task) o;
 
-    public Task(@NotNull @Size(max = 50) String theme, @Size(max = 50) String taskType, int priority,
-            @Size(max = 200) String description, User user, Project project) {
-        super();
-        this.theme = theme;
-        this.taskType = taskType;
-        this.priority = priority;
-        this.description = description;
-        this.user = user;
-        this.project = project;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
-    public String getTaskType() {
-        return taskType;
-    }
-
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
+        return Objects.equals(getId(), task.getId());
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + priority;
-        result = prime * result + ((project == null) ? 0 : project.hashCode());
-        result = prime * result + ((taskType == null) ? 0 : taskType.hashCode());
-        result = prime * result + ((theme == null) ? 0 : theme.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Task other = (Task) obj;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (priority != other.priority)
-            return false;
-        if (project == null) {
-            if (other.project != null)
-                return false;
-        } else if (!project.equals(other.project))
-            return false;
-        if (taskType == null) {
-            if (other.taskType != null)
-                return false;
-        } else if (!taskType.equals(other.taskType))
-            return false;
-        if (theme == null) {
-            if (other.theme != null)
-                return false;
-        } else if (!theme.equals(other.theme))
-            return false;
-        if (user == null) {
-            return other.user == null;
-        } else return user.equals(other.user);
+        return 1976597858;
     }
 
     @Override
     public String toString() {
-        return "Task [id=" + id + ", theme=" + theme + ", taskType=" + taskType + ", priority=" + priority
-                + ", description=" + description + ", user=" + user + ", project=" + project + "]";
+        return getClass().getSimpleName() + "(" +
+                "id = " + getId() + ", " +
+                "theme = " + getTheme() + ", " +
+                "taskType = " + getTaskType() + ", " +
+                "priority = " + getPriority() + ", " +
+                "description = " + getDescription() + ")";
     }
-
 }
