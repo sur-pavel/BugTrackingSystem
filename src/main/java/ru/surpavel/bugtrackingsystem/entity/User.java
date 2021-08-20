@@ -16,7 +16,11 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User extends BaseEntity {
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     @Size(max = 50)

@@ -16,7 +16,11 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Task extends BaseEntity {
+public class Task {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     @Size(max = 50)
