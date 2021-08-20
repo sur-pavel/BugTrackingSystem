@@ -1,20 +1,10 @@
 package ru.surpavel.bugtrackingsystem.controller;
 
-import java.util.Optional;
-
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import ru.surpavel.bugtrackingsystem.entity.Project;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
@@ -22,6 +12,9 @@ import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
 import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
 import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
+
+import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 public class ProjectController {
@@ -65,14 +58,14 @@ public class ProjectController {
         return projectRepository.findById(projectId).map(project -> {
             project.setTitle(projectRequest.getTitle());
             return projectRepository.save(project);
-        }).orElseThrow(() -> new ResourceNotFoundException("ProjectId " + projectId + " not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("ProjectId " + projectId));
     }
 
     @DeleteMapping("/projects/{projectId}")
-    public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
+    public ResponseEntity<Object> deleteProject(@PathVariable Long projectId) {
         return projectRepository.findById(projectId).map(project -> {
             projectRepository.delete(project);
             return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("ProjectId " + projectId + " not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("ProjectId " + projectId));
     }
 }

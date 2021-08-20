@@ -1,25 +1,18 @@
 package ru.surpavel.bugtrackingsystem.controller;
 
-import java.util.Optional;
-
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
 import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
 import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
+
+import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 public class TaskController {
@@ -35,12 +28,12 @@ public class TaskController {
 
     @PostMapping("/projects/{projectId}/users/{userId}/tasks")
     public Task createTask(@PathVariable(value = "projectId") Long projectId,
-            @PathVariable(value = "userId") Long userId, @Valid Task task) {
+                           @PathVariable(value = "userId") Long userId, @Valid Task task) {
         if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("ProjectId " + projectId + " not found");
+            throw new ResourceNotFoundException("ProjectId " + projectId);
         }
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("UserId " + userId + " not found");
+            throw new ResourceNotFoundException("UserId " + userId);
         }
         task.setProject(projectRepository.findById(projectId).get());
         task.setUser(userRepository.findById(userId).get());
@@ -59,13 +52,13 @@ public class TaskController {
 
     @PutMapping("/projects/{projectId}/users/{userId}/tasks/{taskId}")
     public Task updateTask(@PathVariable(value = "projectId") Long projectId,
-            @PathVariable(value = "userId") Long userId, @PathVariable(value = "taskId") Long taskId,
-            @Valid Task taskRequest) {
+                           @PathVariable(value = "userId") Long userId, @PathVariable(value = "taskId") Long taskId,
+                           @Valid Task taskRequest) {
         if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("ProjectId " + projectId + " not found");
+            throw new ResourceNotFoundException("ProjectId " + projectId);
         }
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("UserId " + userId + " not found");
+            throw new ResourceNotFoundException("UserId " + userId);
         }
         return taskRepository.findById(taskId).map(task -> {
             task.setTheme(taskRequest.getTheme());
@@ -75,14 +68,14 @@ public class TaskController {
             task.setProject(projectRepository.findById(projectId).get());
             task.setUser(userRepository.findById(userId).get());
             return taskRepository.save(task);
-        }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId + "not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId));
     }
 
     @DeleteMapping("/tasks/{taskId}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
+    public ResponseEntity<Object> deleteTask(@PathVariable Long taskId) {
         return taskRepository.findById(taskId).map(task -> {
             taskRepository.delete(task);
             return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId + " not found"));
+        }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId));
     }
 }
