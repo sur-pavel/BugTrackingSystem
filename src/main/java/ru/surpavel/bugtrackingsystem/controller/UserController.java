@@ -51,21 +51,17 @@ public class UserController {
         return taskRepository.findByUserId(userId);
     }
 
-    @PutMapping("/projects/{projectId}/users/{userId}")
-    public User updateUser(@PathVariable(value = "projectId") Long projectId,
-                           @PathVariable(value = "userId") Long userId, @Valid User userRequest) {
+    @PutMapping("/users/{userId}")
+    public User updateUser(@PathVariable(value = "userId") Long userId,
+                           @Valid User userRequest) {
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
-        if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("ProjectId " + projectId);
-        }
-        userRequest.setProject(projectRepository.findById(projectId).get());
         return userRepository.findById(userId).map(user -> {
             user.setFirstName(userRequest.getFirstName());
             user.setLastName(userRequest.getLastName());
             return userRepository.save(user);
-        }).orElseThrow(() -> new ResourceNotFoundException("UserId " + userId));
+        }).orElseThrow(() -> new ResourceNotFoundException(USER_ID + userId));
     }
 
     @DeleteMapping("/users/{userId}")
@@ -73,7 +69,7 @@ public class UserController {
         return userRepository.findById(userId).map(user -> {
             userRepository.delete(user);
             return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("UserId " + userId));
+        }).orElseThrow(() -> new ResourceNotFoundException(USER_ID + userId));
     }
 
     protected UserDTO convertToDTO(User user) {
@@ -88,5 +84,11 @@ public class UserController {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         return user;
+    }
+
+    protected User getUser(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.orElseThrow(()
+                -> new ResourceNotFoundException(USER_ID + userId));
     }
 }

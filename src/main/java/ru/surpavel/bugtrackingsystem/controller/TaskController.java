@@ -26,6 +26,7 @@ import static ru.surpavel.bugtrackingsystem.controller.UserController.USER_ID;
 public class TaskController {
 
     public static final String TASK_ID = "TaskId ";
+
     @Autowired
     private ProjectRepository projectRepository;
 
@@ -34,8 +35,13 @@ public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
+
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ProjectController projectController;
+
     @Autowired
     private UserController userController;
 
@@ -52,24 +58,12 @@ public class TaskController {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
         Task task = convertToEntity(taskDTO);
-        Project project = getProject(projectId);
+        Project project = projectController.getProject(projectId);
         task.setProject(project);
-        User user = getUser(userId);
+        User user = userController.getUser(userId);
         task.setUser(user);
         Task taskCreated = taskRepository.save(task);
         return convertToDTO(taskCreated);
-    }
-
-    private User getUser(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        return optionalUser.orElseThrow(()
-                -> new ResourceNotFoundException(USER_ID + userId));
-    }
-
-    private Project getProject(Long projectId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        return optionalProject.orElseThrow(()
-                -> new ResourceNotFoundException(PROJECT_ID + projectId));
     }
 
     @GetMapping("/tasks")
@@ -88,10 +82,11 @@ public class TaskController {
     }
 
     @PutMapping("/projects/{projectId}/users/{userId}/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.OK)
     public Task updateTask(@PathVariable(value = "projectId") Long projectId,
                            @PathVariable(value = "userId") Long userId,
                            @PathVariable(value = "taskId") Long taskId,
-                           TaskDTO taskDTO) {
+                           @RequestBody TaskDTO taskDTO) {
         if (!projectRepository.existsById(projectId)) {
             throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
@@ -103,8 +98,8 @@ public class TaskController {
             task.setTaskType(taskDTO.getTaskType());
             task.setPriority(taskDTO.getPriority());
             task.setDescription(taskDTO.getDescription());
-            task.setProject(getProject(projectId));
-            task.setUser(getUser(userId));
+            task.setProject(projectController.getProject(projectId));
+            task.setUser(userController.getUser(userId));
             return taskRepository.save(task);
         }).orElseThrow(() -> new ResourceNotFoundException(TASK_ID + taskId));
     }
@@ -144,5 +139,4 @@ public class TaskController {
         return optionalTask.orElseThrow(()
                 -> new ResourceNotFoundException(PROJECT_ID + taskId));
     }
-
 }

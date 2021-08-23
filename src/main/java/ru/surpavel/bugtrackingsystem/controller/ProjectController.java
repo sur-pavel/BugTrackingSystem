@@ -51,7 +51,7 @@ public class ProjectController {
         return convertToDTO(projectCreated);
     }
 
-    @GetMapping("/projects")
+    @GetMapping("/project   s")
     @ResponseBody
     public List<ProjectDTO> findAllProjects() {
         List<Project> projects = projectRepository.findAll();
@@ -65,11 +65,6 @@ public class ProjectController {
         return convertToDTO(project);
     }
 
-    private Project getProject(@PathVariable Long projectId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
-        return optionalProject.orElseThrow(()
-                -> new ResourceNotFoundException(PROJECT_ID + projectId));
-    }
 
     @GetMapping("/projects/{projectId}/users")
     @ResponseStatus(HttpStatus.OK)
@@ -89,7 +84,8 @@ public class ProjectController {
 
     @PutMapping("/projects/{projectId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProjectDTO updateProject(@RequestBody ProjectDTO projectDTO, @PathVariable Long projectId) {
+    public ProjectDTO updateProject(@RequestBody ProjectDTO projectDTO,
+                                    @PathVariable Long projectId) {
         return projectRepository.findById(projectId).map(project -> {
             project.setTitle(projectDTO.getTitle());
             return convertToDTO(projectRepository.save(project));
@@ -116,4 +112,11 @@ public class ProjectController {
         project.setTitle(projectDTO.getTitle());
         return project;
     }
+
+    protected Project getProject(@PathVariable Long projectId) {
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        return optionalProject.orElseThrow(()
+                -> new ResourceNotFoundException(PROJECT_ID + projectId));
+    }
+
 }
