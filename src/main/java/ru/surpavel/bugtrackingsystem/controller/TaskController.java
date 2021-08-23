@@ -1,17 +1,22 @@
 package ru.surpavel.bugtrackingsystem.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.surpavel.bugtrackingsystem.dto.TaskDTO;
+import ru.surpavel.bugtrackingsystem.dto.UserDTO;
 import ru.surpavel.bugtrackingsystem.entity.Task;
+import ru.surpavel.bugtrackingsystem.entity.User;
 import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
 import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
 import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +30,10 @@ public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
+    private UserController userConroller;
 
     @PostMapping("/projects/{projectId}/users/{userId}/tasks")
     public Task createTask(@PathVariable(value = "projectId") Long projectId,
@@ -77,5 +86,27 @@ public class TaskController {
             taskRepository.delete(task);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId));
+    }
+
+    protected TaskDTO convertToDTO(Task task) {
+        TaskDTO taskDTO = modelMapper.map(task, TaskDTO.class);
+        taskDTO.setTaskType(task.getTaskType());
+        taskDTO.setDescription(task.getDescription());
+        taskDTO.setPriority(task.getPriority());
+        taskDTO.setTheme(task.getTheme());
+        UserDTO userDTO = userConroller.convertToDTO(task.getUser());
+        taskDTO.setUserDTO(userDTO);
+        return taskDTO;
+    }
+
+    protected Task convertToEntity(TaskDTO taskDTO) throws ParseException {
+        Task task = modelMapper.map(taskDTO, Task.class);
+        task.setTaskType(taskDTO.getTaskType());
+        task.setDescription(taskDTO.getDescription());
+        task.setPriority(taskDTO.getPriority());
+        task.setTheme(taskDTO.getTheme());
+        User user = userConroller.convertToEntity(taskDTO.getUserDTO());
+        task.setUser(user);
+        return task;
     }
 }
