@@ -15,13 +15,13 @@ import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
 
 import javax.validation.Valid;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class UserController {
 
+    public static final String USER_ID = "UserId ";
     @Autowired
     private ProjectRepository projectRepository;
     @Autowired
@@ -55,7 +55,7 @@ public class UserController {
     public User updateUser(@PathVariable(value = "projectId") Long projectId,
                            @PathVariable(value = "userId") Long userId, @Valid User userRequest) {
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("UserId " + userId);
+            throw new ResourceNotFoundException(USER_ID + userId);
         }
         if (!projectRepository.existsById(projectId)) {
             throw new ResourceNotFoundException("ProjectId " + projectId);
@@ -83,7 +83,7 @@ public class UserController {
         return userDTO;
     }
 
-    protected User convertToEntity(UserDTO userDTO) throws ParseException {
+    protected User convertToEntity(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());

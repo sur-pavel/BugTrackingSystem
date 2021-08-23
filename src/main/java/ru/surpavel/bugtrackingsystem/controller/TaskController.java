@@ -2,12 +2,12 @@ package ru.surpavel.bugtrackingsystem.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.surpavel.bugtrackingsystem.dto.TaskDTO;
 import ru.surpavel.bugtrackingsystem.dto.UserDTO;
+import ru.surpavel.bugtrackingsystem.entity.Project;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
 import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
@@ -15,13 +15,17 @@ import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
 import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
 
-import javax.validation.Valid;
-import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static ru.surpavel.bugtrackingsystem.controller.ProjectController.PROJECT_ID;
+import static ru.surpavel.bugtrackingsystem.controller.UserController.USER_ID;
 
 @RestController
 public class TaskController {
 
+    public static final String TASK_ID = "TaskId ";
     @Autowired
     private ProjectRepository projectRepository;
 
@@ -33,51 +37,76 @@ public class TaskController {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private UserController userConroller;
+    private UserController userController;
 
     @PostMapping("/projects/{projectId}/users/{userId}/tasks")
-    public Task createTask(@PathVariable(value = "projectId") Long projectId,
-                           @PathVariable(value = "userId") Long userId, @Valid Task task) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public TaskDTO createTask(@PathVariable(value = "projectId") Long projectId,
+                              @PathVariable(value = "userId") Long userId,
+                              @RequestBody TaskDTO taskDTO) {
         if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("ProjectId " + projectId);
+            throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("UserId " + userId);
+            throw new ResourceNotFoundException(USER_ID + userId);
         }
-        task.setProject(projectRepository.findById(projectId).get());
-        task.setUser(userRepository.findById(userId).get());
-        return taskRepository.save(task);
+        Task task = convertToEntity(taskDTO);
+        Project project = getProject(projectId);
+        task.setProject(project);
+        User user = getUser(userId);
+        task.setUser(user);
+        Task taskCreated = taskRepository.save(task);
+        return convertToDTO(taskCreated);
+    }
+
+    private User getUser(Long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        return optionalUser.orElseThrow(()
+                -> new ResourceNotFoundException(USER_ID + userId));
+    }
+
+    private Project getProject(Long projectId) {
+        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        return optionalProject.orElseThrow(()
+                -> new ResourceNotFoundException(PROJECT_ID + projectId));
     }
 
     @GetMapping("/tasks")
-    public Page<Task> findAllTasks(Pageable pageable) {
-        return taskRepository.findAll(pageable);
+    public List<TaskDTO> findAllTasks() {
+        List<Task> tasks = taskRepository.findAll();
+        return tasks.stream().map(this::convertToDTO).collect(Collectors.toList());
+
     }
 
     @GetMapping("/tasks/{taskId}")
-    public Optional<Task> findTaskById(@PathVariable Long taskId) {
-        return taskRepository.findById(taskId);
+    @ResponseStatus(HttpStatus.OK)
+    public TaskDTO findTaskById(@PathVariable Long taskId) {
+        Task task = getTask(taskId);
+        return convertToDTO(task);
+
     }
 
     @PutMapping("/projects/{projectId}/users/{userId}/tasks/{taskId}")
     public Task updateTask(@PathVariable(value = "projectId") Long projectId,
-                           @PathVariable(value = "userId") Long userId, @PathVariable(value = "taskId") Long taskId,
-                           @Valid Task taskRequest) {
+                           @PathVariable(value = "userId") Long userId,
+                           @PathVariable(value = "taskId") Long taskId,
+                           TaskDTO taskDTO) {
         if (!projectRepository.existsById(projectId)) {
-            throw new ResourceNotFoundException("ProjectId " + projectId);
+            throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
         if (!userRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("UserId " + userId);
+            throw new ResourceNotFoundException(USER_ID + userId);
         }
         return taskRepository.findById(taskId).map(task -> {
-            task.setTheme(taskRequest.getTheme());
-            task.setTaskType(taskRequest.getTaskType());
-            task.setPriority(taskRequest.getPriority());
-            task.setDescription(taskRequest.getDescription());
-            task.setProject(projectRepository.findById(projectId).get());
-            task.setUser(userRepository.findById(userId).get());
+            task.setTheme(taskDTO.getTheme());
+            task.setTaskType(taskDTO.getTaskType());
+            task.setPriority(taskDTO.getPriority());
+            task.setDescription(taskDTO.getDescription());
+            task.setProject(getProject(projectId));
+            task.setUser(getUser(userId));
             return taskRepository.save(task);
-        }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId));
+        }).orElseThrow(() -> new ResourceNotFoundException(TASK_ID + taskId));
     }
 
     @DeleteMapping("/tasks/{taskId}")
@@ -85,7 +114,7 @@ public class TaskController {
         return taskRepository.findById(taskId).map(task -> {
             taskRepository.delete(task);
             return ResponseEntity.ok().build();
-        }).orElseThrow(() -> new ResourceNotFoundException("TaskId " + taskId));
+        }).orElseThrow(() -> new ResourceNotFoundException(TASK_ID + taskId));
     }
 
     protected TaskDTO convertToDTO(Task task) {
@@ -94,19 +123,26 @@ public class TaskController {
         taskDTO.setDescription(task.getDescription());
         taskDTO.setPriority(task.getPriority());
         taskDTO.setTheme(task.getTheme());
-        UserDTO userDTO = userConroller.convertToDTO(task.getUser());
+        UserDTO userDTO = userController.convertToDTO(task.getUser());
         taskDTO.setUserDTO(userDTO);
         return taskDTO;
     }
 
-    protected Task convertToEntity(TaskDTO taskDTO) throws ParseException {
+    protected Task convertToEntity(TaskDTO taskDTO) {
         Task task = modelMapper.map(taskDTO, Task.class);
         task.setTaskType(taskDTO.getTaskType());
         task.setDescription(taskDTO.getDescription());
         task.setPriority(taskDTO.getPriority());
         task.setTheme(taskDTO.getTheme());
-        User user = userConroller.convertToEntity(taskDTO.getUserDTO());
+        User user = userController.convertToEntity(taskDTO.getUserDTO());
         task.setUser(user);
         return task;
     }
+
+    private Task getTask(@PathVariable Long taskId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        return optionalTask.orElseThrow(()
+                -> new ResourceNotFoundException(PROJECT_ID + taskId));
+    }
+
 }
