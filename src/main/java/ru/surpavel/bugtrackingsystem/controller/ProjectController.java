@@ -35,7 +35,6 @@ public class ProjectController {
     private ModelMapper modelMapper;
 
     @PostMapping("/projects")
-@Api(value="bug tracking system", description="Operations with projects of system")
     public Project createProject(@Valid Project project) {
 
         return projectRepository.save(project);

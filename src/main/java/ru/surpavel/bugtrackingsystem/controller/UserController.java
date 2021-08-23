@@ -13,6 +13,7 @@ import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -42,8 +43,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}/tasks")
-    public Page<Task> findUserTasks(@PathVariable(value = "userId") Long userId, Pageable pageable) {
-        return taskRepository.findByUserId(userId, pageable);
+    public List<Task> findUserTasks(@PathVariable(value = "userId") Long userId, Pageable pageable) {
+        return taskRepository.findByUserId(userId);
     }
 
     @PutMapping("/projects/{projectId}/users/{userId}")

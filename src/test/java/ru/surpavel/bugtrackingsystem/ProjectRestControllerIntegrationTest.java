@@ -1,13 +1,7 @@
 package ru.surpavel.bugtrackingsystem;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +11,24 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import ru.surpavel.bugtrackingsystem.controller.ProjectController;
 import ru.surpavel.bugtrackingsystem.entity.Project;
 import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
 import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
 import ru.surpavel.bugtrackingsystem.repository.UserRepository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { BugTrackingSystemSpringBootApplication.class, 
+@SpringBootTest(classes = {BugTrackingSystemSpringBootApplication.class,
         ProjectRepository.class, UserRepository.class,
-        TaskRepository.class, ProjectController.class })
+        TaskRepository.class, ProjectController.class})
 @AutoConfigureMockMvc
 public class ProjectRestControllerIntegrationTest {
 
@@ -71,7 +69,7 @@ public class ProjectRestControllerIntegrationTest {
         String title = "second";
         Project project = new Project(title);
         projectRepository.save(project);
-        Long id = projectRepository.findByTitle(title).get().getId();
+        Long id = projectRepository.findByTitle(title).get(0).getId();
         this.mockMvc.perform(get("/projects/" + id)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString(title)));
     }
@@ -82,7 +80,7 @@ public class ProjectRestControllerIntegrationTest {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(new Project(title));
         mockMvc.perform(post("/projects").content(json).contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+                        .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath(title).exists());
     }
 }
