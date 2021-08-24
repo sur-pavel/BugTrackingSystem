@@ -10,10 +10,10 @@ import ru.surpavel.bugtrackingsystem.dto.UserDTO;
 import ru.surpavel.bugtrackingsystem.entity.Project;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
-import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
-import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
-import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
-import ru.surpavel.bugtrackingsystem.repository.UserRepository;
+import ru.surpavel.bugtrackingsystem.service.ProjectService;
+import ru.surpavel.bugtrackingsystem.service.ResourceNotFoundException;
+import ru.surpavel.bugtrackingsystem.service.TaskService;
+import ru.surpavel.bugtrackingsystem.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,13 +28,13 @@ public class TaskController {
     public static final String TASK_ID = "TaskId ";
 
     @Autowired
-    private ProjectRepository projectRepository;
+    private ProjectService projectService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -51,10 +51,10 @@ public class TaskController {
     public TaskDTO createTask(@PathVariable(value = "projectId") Long projectId,
                               @PathVariable(value = "userId") Long userId,
                               @RequestBody TaskDTO taskDTO) {
-        if (!projectRepository.existsById(projectId)) {
+        if (!projectService.existsById(projectId)) {
             throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
-        if (!userRepository.existsById(userId)) {
+        if (!userService.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
         Task task = convertToEntity(taskDTO);
@@ -62,13 +62,13 @@ public class TaskController {
         task.setProject(project);
         User user = userController.getUser(userId);
         task.setUser(user);
-        Task taskCreated = taskRepository.save(task);
+        Task taskCreated = taskService.save(task);
         return convertToDTO(taskCreated);
     }
 
     @GetMapping("/tasks")
     public List<TaskDTO> findAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
+        List<Task> tasks = taskService.findAll();
         return tasks.stream().map(this::convertToDTO).collect(Collectors.toList());
 
     }
@@ -87,27 +87,27 @@ public class TaskController {
                            @PathVariable(value = "userId") Long userId,
                            @PathVariable(value = "taskId") Long taskId,
                            @RequestBody TaskDTO taskDTO) {
-        if (!projectRepository.existsById(projectId)) {
+        if (!projectService.existsById(projectId)) {
             throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
-        if (!userRepository.existsById(userId)) {
+        if (!userService.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
-        return taskRepository.findById(taskId).map(task -> {
+        return taskService.findById(taskId).map(task -> {
             task.setTheme(taskDTO.getTheme());
             task.setTaskType(taskDTO.getTaskType());
             task.setPriority(taskDTO.getPriority());
             task.setDescription(taskDTO.getDescription());
             task.setProject(projectController.getProject(projectId));
             task.setUser(userController.getUser(userId));
-            return taskRepository.save(task);
+            return taskService.save(task);
         }).orElseThrow(() -> new ResourceNotFoundException(TASK_ID + taskId));
     }
 
     @DeleteMapping("/tasks/{taskId}")
     public ResponseEntity<Object> deleteTask(@PathVariable Long taskId) {
-        return taskRepository.findById(taskId).map(task -> {
-            taskRepository.delete(task);
+        return taskService.findById(taskId).map(task -> {
+            taskService.delete(task);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException(TASK_ID + taskId));
     }
@@ -135,7 +135,7 @@ public class TaskController {
     }
 
     private Task getTask(@PathVariable Long taskId) {
-        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        Optional<Task> optionalTask = taskService.findById(taskId);
         return optionalTask.orElseThrow(()
                 -> new ResourceNotFoundException(PROJECT_ID + taskId));
     }

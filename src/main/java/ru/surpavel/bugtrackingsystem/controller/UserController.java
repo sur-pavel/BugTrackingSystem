@@ -2,17 +2,17 @@ package ru.surpavel.bugtrackingsystem.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.surpavel.bugtrackingsystem.dto.UserDTO;
+import ru.surpavel.bugtrackingsystem.entity.BaseEntity;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
-import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
-import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
-import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
-import ru.surpavel.bugtrackingsystem.repository.UserRepository;
+import ru.surpavel.bugtrackingsystem.service.ProjectService;
+import ru.surpavel.bugtrackingsystem.service.ResourceNotFoundException;
+import ru.surpavel.bugtrackingsystem.service.TaskService;
+import ru.surpavel.bugtrackingsystem.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,51 +23,51 @@ public class UserController {
 
     public static final String USER_ID = "UserId ";
     @Autowired
-    private ProjectRepository projectRepository;
+    private ProjectService projectService;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
     @Autowired
     private ModelMapper modelMapper;
 
     @PostMapping("/users")
-    public User createUser(@Valid User user) {
-        return userRepository.save(user);
+    public BaseEntity createUser(@Valid User user) {
+        return userService.save(user);
     }
 
     @GetMapping("/users")
-    public Page<User> findAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public List<User> findAllUsers() {
+        return userService.findAll();
     }
 
     @GetMapping("/users/{userId}")
     public Optional<User> findUserById(@PathVariable Long userId) {
-        return userRepository.findById(userId);
+        return userService.findById(userId);
     }
 
     @GetMapping("/users/{userId}/tasks")
     public List<Task> findUserTasks(@PathVariable(value = "userId") Long userId, Pageable pageable) {
-        return taskRepository.findByUserId(userId);
+        return taskService.findByUserId(userId);
     }
 
     @PutMapping("/users/{userId}")
     public User updateUser(@PathVariable(value = "userId") Long userId,
                            @Valid User userRequest) {
-        if (!userRepository.existsById(userId)) {
+        if (!userService.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
-        return userRepository.findById(userId).map(user -> {
+        return userService.findById(userId).map(user -> {
             user.setFirstName(userRequest.getFirstName());
             user.setLastName(userRequest.getLastName());
-            return userRepository.save(user);
+            return userService.save(user);
         }).orElseThrow(() -> new ResourceNotFoundException(USER_ID + userId));
     }
 
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long userId) {
-        return userRepository.findById(userId).map(user -> {
-            userRepository.delete(user);
+        return userService.findById(userId).map(user -> {
+            userService.delete(user);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException(USER_ID + userId));
     }
@@ -87,7 +87,7 @@ public class UserController {
     }
 
     protected User getUser(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userService.findById(userId);
         return optionalUser.orElseThrow(()
                 -> new ResourceNotFoundException(USER_ID + userId));
     }

@@ -11,10 +11,10 @@ import ru.surpavel.bugtrackingsystem.dto.UserDTO;
 import ru.surpavel.bugtrackingsystem.entity.Project;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
-import ru.surpavel.bugtrackingsystem.repository.ProjectRepository;
-import ru.surpavel.bugtrackingsystem.repository.ResourceNotFoundException;
-import ru.surpavel.bugtrackingsystem.repository.TaskRepository;
-import ru.surpavel.bugtrackingsystem.repository.UserRepository;
+import ru.surpavel.bugtrackingsystem.service.ProjectService;
+import ru.surpavel.bugtrackingsystem.service.ResourceNotFoundException;
+import ru.surpavel.bugtrackingsystem.service.TaskService;
+import ru.surpavel.bugtrackingsystem.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +25,13 @@ public class ProjectController {
 
     public static final String PROJECT_ID = "ProjectId ";
     @Autowired
-    private ProjectRepository projectRepository;
+    private ProjectService projectService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    private TaskRepository taskRepository;
+    private TaskService taskService;
 
     @Autowired
     private UserController userController;
@@ -47,14 +47,14 @@ public class ProjectController {
     @ResponseBody
     public ProjectDTO createProject(@RequestBody ProjectDTO projectDTO) {
         Project project = convertToEntity(projectDTO);
-        Project projectCreated = projectRepository.save(project);
+        Project projectCreated = projectService.save(project);
         return convertToDTO(projectCreated);
     }
 
     @GetMapping("/project   s")
     @ResponseBody
     public List<ProjectDTO> findAllProjects() {
-        List<Project> projects = projectRepository.findAll();
+        List<Project> projects = projectService.findAll();
         return projects.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
@@ -70,14 +70,14 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> findAllProjectUsers(@PathVariable Long projectId) {
         Project project = getProject(projectId);
-        List<User> users = userRepository.findByProjectId(project.getId());
+        List<User> users = userService.findByProjectId(project.getId());
         return users.stream().map(userController::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/projects/{projectId}/tasks")
     public List<TaskDTO> findAllProjectTasks(@PathVariable Long projectId) {
         Project project = getProject(projectId);
-        List<Task> tasks = taskRepository.findByProjectId(project.getId());
+        List<Task> tasks = taskService.findByProjectId(project.getId());
         return tasks.stream().map(taskController::convertToDTO).collect(Collectors.toList());
 
     }
@@ -86,17 +86,17 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.OK)
     public ProjectDTO updateProject(@RequestBody ProjectDTO projectDTO,
                                     @PathVariable Long projectId) {
-        return projectRepository.findById(projectId).map(project -> {
+        return projectService.findById(projectId).map(project -> {
             project.setTitle(projectDTO.getTitle());
-            return convertToDTO(projectRepository.save(project));
+            return convertToDTO(projectService.save(project));
         }).orElseThrow(() -> new ResourceNotFoundException(PROJECT_ID + projectId));
     }
 
     @DeleteMapping("/projects/{projectId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> deleteProject(@PathVariable Long projectId) {
-        return projectRepository.findById(projectId).map(project -> {
-            projectRepository.delete(project);
+        return projectService.findById(projectId).map(project -> {
+            projectService.delete(project);
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException(PROJECT_ID + projectId));
     }
@@ -114,7 +114,7 @@ public class ProjectController {
     }
 
     protected Project getProject(@PathVariable Long projectId) {
-        Optional<Project> optionalProject = projectRepository.findById(projectId);
+        Optional<Project> optionalProject = projectService.findById(projectId);
         return optionalProject.orElseThrow(()
                 -> new ResourceNotFoundException(PROJECT_ID + projectId));
     }
