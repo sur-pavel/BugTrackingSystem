@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '../user';
 
 @Component({
   selector: 'app-user-list',
@@ -7,7 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserListComponent implements OnInit {
 
-  constructor() { }
+  users: User[]
+  constructor() {
+    this.users = [{
+      "firstName": "Nik",
+      "lastName" : "Good"
+    },
+  {
+    "firstName": "Took",
+    "lastName" : "Reid"
+  }]
+   }
 
   ngOnInit(): void {
   }

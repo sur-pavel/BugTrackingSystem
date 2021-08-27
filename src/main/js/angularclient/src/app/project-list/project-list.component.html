@@ -1,13 +1,13 @@
 <h2> Project List</h2>
 <table class="table table-striped">
   <thead>
-  <tr>
-    <th>Title</th>
-  </tr>
+    <tr>
+      <th>Title</th>
+    </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let project of projects">
-
-  </tr>
+    <tr *ngFor="let project of projects">
+      <td>{{project.title}}</td>
+    </tr>
   </tbody>
 </table>

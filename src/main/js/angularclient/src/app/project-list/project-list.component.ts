@@ -7,10 +7,18 @@ import { Project } from '../project'
 })
 export class ProjectListComponent implements OnInit {
 
-projects: Project[];
-  constructor() { }
+  projects: Project[];
+  constructor() {
+    this.projects = [{
+      "title": "Frist"
+          },
+        {
+          "title": "Second"
+        }]
+   }
 
   ngOnInit(): void {
+    
   }
 
 }

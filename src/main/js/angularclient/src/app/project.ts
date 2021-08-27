@@ -1,3 +1,3 @@
 export class Project {
-title: string;
+    title!: string;
 }
