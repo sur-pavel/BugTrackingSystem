@@ -32,8 +32,9 @@ public class UserController {
     private ModelMapper modelMapper;
 
     @PostMapping("/users")
-    public UserDTO createUser(@Valid User user) {
-        return userService.save(user);
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = converToEntity(userDTO);
+        return converToDTO(userService.save(user));
     }
 
     @GetMapping("/users")
