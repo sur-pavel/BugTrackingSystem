@@ -95,12 +95,14 @@ public class ProjectController {
 
     private ProjectDTO convertToDTO(Project project) {
         ProjectDTO projectDTO = modelMapper.map(project, ProjectDTO.class);
+        projectDTO.setId(project.getId());
         projectDTO.setTitle(project.getTitle());
         return projectDTO;
     }
 
     private Project convertToEntity(ProjectDTO projectDTO) {
         Project project = modelMapper.map(projectDTO, Project.class);
+        project.setId(projectDTO.getId());
         project.setTitle(projectDTO.getTitle());
         return project;
     }
