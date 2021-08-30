@@ -11,8 +11,11 @@ export class ProjectService {
   private baseUrl = "http://localhost:8080/projects"
   constructor(private httpClient: HttpClient) { }
 
-  getProjectsList(): Observable<Project[]> {
-    return this.httpClient.get<Project[]>(`${this.baseUrl}`);
-
+  public findAll(): Observable<Project[]> {
+    return this.httpClient.get<Project[]>(this.baseUrl);
+  }
+  public save(project: Project){
+    console.log(project);
+    return this.httpClient.post<Project>(this.baseUrl, project)
   }
 }

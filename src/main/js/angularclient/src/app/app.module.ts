@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CreateProjectComponent } from './create-project/create-project.component';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { CreateTaskComponent } from './create-task/create-task.component'
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CreateTaskComponent } from './create-task/create-task.component'
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

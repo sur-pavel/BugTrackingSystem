@@ -22,7 +22,7 @@ export class ProjectListComponent implements OnInit {
       "title": "Issue",
     }]
 
-    this.projectService.getProjectsList().subscribe(data => {
+    this.projectService.findAll().subscribe(data => {
       this.projects = data;
     })
   }
