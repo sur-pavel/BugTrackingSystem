@@ -16,8 +16,6 @@ public class ProjectService implements IService<Project> {
 
     @Autowired
     private TaskService taskService;
-    @Autowired
-    private UserService userService;
 
     @Override
     public Project save(Project entity) {
