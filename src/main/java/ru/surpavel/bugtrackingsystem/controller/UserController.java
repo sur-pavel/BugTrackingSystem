@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.surpavel.bugtrackingsystem.dto.UserDTO;
-import ru.surpavel.bugtrackingsystem.entity.BaseEntity;
+import ru.surpavel.bugtrackingsystem.entity.User;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
 import ru.surpavel.bugtrackingsystem.service.ProjectService;
@@ -32,17 +32,18 @@ public class UserController {
     private ModelMapper modelMapper;
 
     @PostMapping("/users")
-    public BaseEntity createUser(@Valid User user) {
-        return userService.save(user);
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = converToEntity(userDTO);
+        return converToDTO(userService.save(user));
     }
 
     @GetMapping("/users")
-    public List<User> findAllUsers() {
+    public List<UserDTO> findAllUsers() {
         return userService.findAll();
     }
 
     @GetMapping("/users/{userId}")
-    public Optional<User> findUserById(@PathVariable Long userId) {
+    public Optional<UserDTO> findUserById(@PathVariable Long userId) {
         return userService.findById(userId);
     }
 
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
-    public User updateUser(@PathVariable(value = "userId") Long userId,
+    public UserDTO updateUser(@PathVariable(value = "userId") Long userId,
                            @Valid User userRequest) {
         if (!userService.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
