@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from '../project'
+import { ProjectService } from '../project.service';
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
@@ -7,18 +8,27 @@ import { Project } from '../project'
 })
 export class ProjectListComponent implements OnInit {
 
-  projects: Project[];
-  constructor() {
+  projects!: Project[];
+
+  constructor(private projectService: ProjectService) {
+    this.getProjects();
+  }
+  private getProjects() {
+
     this.projects = [{
-      "title": "Frist"
-          },
-        {
-          "title": "Second"
-        }]
-   }
+      "title": "Bug",
+    },
+    {
+      "title": "Issue",
+    }]
+
+    this.projectService.getProjectsList().subscribe(data => {
+      this.projects = data;
+    })
+  }
 
   ngOnInit(): void {
-    
+
   }
 
 }

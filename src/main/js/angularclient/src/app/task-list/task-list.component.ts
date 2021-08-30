@@ -12,7 +12,7 @@ export class TaskListComponent implements OnInit {
   constructor() {
     this.tasks = [{
     "theme" : "App test",
-    "description" : "fdlkjfa;jk4aj Test improve",
+    "description" : "LET'S Test improve",
     "priority": 1,
     "taskType" : "Bug"
     }]
