@@ -37,6 +37,11 @@ public class User extends BaseEntity {
     @JsonIgnore
     private Project project;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id")
+    @JsonIgnore
+    private Task task;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,14 +53,6 @@ public class User extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return 562048007;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + getId() + ", " +
-                "firstName = " + getFirstName() + ", " +
-                "lastName = " + getLastName() + ")";
+        return Objects.hash(id, firstName, lastName, project, task);
     }
 }
