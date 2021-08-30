@@ -3,13 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProjectListComponent } from './project-list/project-list.component';
-import { UserListComponent } from './user-list/user-list.component';
-import { TaskListComponent } from './task-list/task-list.component';
+import { ProjectListComponent } from './projects/project-list/project-list.component';
+import { UserListComponent } from './users/user-list/user-list.component';
+import { TaskListComponent } from './tasks/task-list/task-list.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CreateProjectComponent } from './create-project/create-project.component';
-import { CreateUserComponent } from './create-user/create-user.component';
-import { CreateTaskComponent } from './create-task/create-task.component'
+import { CreateProjectComponent } from './projects/create-project/create-project.component';
+import { CreateUserComponent } from './users/create-user/create-user.component';
+import { CreateTaskComponent } from './tasks/create-task/create-task.component'
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
