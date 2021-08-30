@@ -10,10 +10,8 @@ import ru.surpavel.bugtrackingsystem.dto.UserDTO;
 import ru.surpavel.bugtrackingsystem.entity.Project;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
-import ru.surpavel.bugtrackingsystem.service.ProjectService;
 import ru.surpavel.bugtrackingsystem.service.ResourceNotFoundException;
 import ru.surpavel.bugtrackingsystem.service.TaskService;
-import ru.surpavel.bugtrackingsystem.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,22 +26,14 @@ public class TaskController {
     public static final String TASK_ID = "TaskId ";
 
     @Autowired
-    private ProjectService projectService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
     private TaskService taskService;
-
+    @Autowired
+    private ProjectController projectController;
+    @Autowired
+    private UserController userController;
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private ProjectController projectController;
-
-    @Autowired
-    private UserController userController;
 
     @PostMapping("/projects/{projectId}/users/{userId}/tasks")
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,10 +41,10 @@ public class TaskController {
     public TaskDTO createTask(@PathVariable(value = "projectId") Long projectId,
                               @PathVariable(value = "userId") Long userId,
                               @RequestBody TaskDTO taskDTO) {
-        if (!projectService.existsById(projectId)) {
+        if (!projectController.existsById(projectId)) {
             throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
-        if (!userService.existsById(userId)) {
+        if (!userController.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
         Task task = convertToEntity(taskDTO);
@@ -69,7 +59,8 @@ public class TaskController {
     @GetMapping("/tasks")
     public List<TaskDTO> findAllTasks() {
         List<Task> tasks = taskService.findAll();
-        return tasks.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return tasks.stream().map(this::convertToDTO).
+                collect(Collectors.toList());
 
     }
 
@@ -87,10 +78,10 @@ public class TaskController {
                            @PathVariable(value = "userId") Long userId,
                            @PathVariable(value = "taskId") Long taskId,
                            @RequestBody TaskDTO taskDTO) {
-        if (!projectService.existsById(projectId)) {
+        if (!projectController.existsById(projectId)) {
             throw new ResourceNotFoundException(PROJECT_ID + projectId);
         }
-        if (!userService.existsById(userId)) {
+        if (!userController.existsById(userId)) {
             throw new ResourceNotFoundException(USER_ID + userId);
         }
         return taskService.findById(taskId).map(task -> {
@@ -138,5 +129,13 @@ public class TaskController {
         Optional<Task> optionalTask = taskService.findById(taskId);
         return optionalTask.orElseThrow(()
                 -> new ResourceNotFoundException(PROJECT_ID + taskId));
+    }
+
+    public List<Task> findByProjectId(Long projectId) {
+        return taskService.findByProjectId(projectId);
+    }
+
+    public List<Task> findByUserId(Long userId) {
+        return taskService.findByUserId(userId);
     }
 }

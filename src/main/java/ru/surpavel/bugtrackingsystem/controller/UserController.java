@@ -2,66 +2,70 @@ package ru.surpavel.bugtrackingsystem.controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.surpavel.bugtrackingsystem.dto.TaskDTO;
 import ru.surpavel.bugtrackingsystem.dto.UserDTO;
-import ru.surpavel.bugtrackingsystem.entity.User;
 import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
-import ru.surpavel.bugtrackingsystem.service.ProjectService;
 import ru.surpavel.bugtrackingsystem.service.ResourceNotFoundException;
-import ru.surpavel.bugtrackingsystem.service.TaskService;
 import ru.surpavel.bugtrackingsystem.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
 
     public static final String USER_ID = "UserId ";
-    @Autowired
-    private ProjectService projectService;
+
     @Autowired
     private UserService userService;
     @Autowired
-    private TaskService taskService;
+    private TaskController taskController;
     @Autowired
     private ModelMapper modelMapper;
 
     @PostMapping("/users")
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = converToEntity(userDTO);
-        return converToDTO(userService.save(user));
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+        User user = convertToEntity(userDTO);
+        return convertToDTO(userService.save(user));
     }
 
     @GetMapping("/users")
+    @ResponseBody
     public List<UserDTO> findAllUsers() {
-        return userService.findAll();
+        List<User> users = userService.findAll();
+        return users.stream().map(this::convertToDTO).
+                collect(Collectors.toList());
     }
 
     @GetMapping("/users/{userId}")
-    public Optional<UserDTO> findUserById(@PathVariable Long userId) {
-        return userService.findById(userId);
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO findUserById(@PathVariable Long userId) {
+        User user = getUser(userId);
+        return convertToDTO(user);
     }
 
     @GetMapping("/users/{userId}/tasks")
-    public List<Task> findUserTasks(@PathVariable(value = "userId") Long userId, Pageable pageable) {
-        return taskService.findByUserId(userId);
+    public List<TaskDTO> findUserTasks(@PathVariable Long userId) {
+        List<Task> tasks = taskController.findByUserId(userId);
+        return tasks.stream().map(taskController::convertToDTO).
+                collect(Collectors.toList());
     }
 
     @PutMapping("/users/{userId}")
-    public UserDTO updateUser(@PathVariable(value = "userId") Long userId,
-                           @Valid User userRequest) {
-        if (!userService.existsById(userId)) {
-            throw new ResourceNotFoundException(USER_ID + userId);
-        }
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO updateUser(@RequestBody UserDTO userDTO,
+                              @PathVariable Long userId) {
         return userService.findById(userId).map(user -> {
-            user.setFirstName(userRequest.getFirstName());
-            user.setLastName(userRequest.getLastName());
-            return userService.save(user);
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            return convertToDTO(userService.save(user));
         }).orElseThrow(() -> new ResourceNotFoundException(USER_ID + userId));
     }
 
@@ -91,5 +95,13 @@ public class UserController {
         Optional<User> optionalUser = userService.findById(userId);
         return optionalUser.orElseThrow(()
                 -> new ResourceNotFoundException(USER_ID + userId));
+    }
+
+    public List<User> findByProjectId(Long id) {
+        return userService.findByProjectId(id);
+    }
+
+    public boolean existsById(Long userId) {
+        return userService.existsById(userId);
     }
 }

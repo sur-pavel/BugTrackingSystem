@@ -13,8 +13,6 @@ import ru.surpavel.bugtrackingsystem.entity.Task;
 import ru.surpavel.bugtrackingsystem.entity.User;
 import ru.surpavel.bugtrackingsystem.service.ProjectService;
 import ru.surpavel.bugtrackingsystem.service.ResourceNotFoundException;
-import ru.surpavel.bugtrackingsystem.service.TaskService;
-import ru.surpavel.bugtrackingsystem.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +24,6 @@ public class ProjectController {
     public static final String PROJECT_ID = "ProjectId ";
     @Autowired
     private ProjectService projectService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private UserController userController;
@@ -51,11 +43,12 @@ public class ProjectController {
         return convertToDTO(projectCreated);
     }
 
-    @GetMapping("/project   s")
+    @GetMapping("/projects")
     @ResponseBody
     public List<ProjectDTO> findAllProjects() {
         List<Project> projects = projectService.findAll();
-        return projects.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return projects.stream().map(this::convertToDTO).
+                collect(Collectors.toList());
     }
 
     @GetMapping("/projects/{projectId}")
@@ -70,14 +63,13 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> findAllProjectUsers(@PathVariable Long projectId) {
         Project project = getProject(projectId);
-        List<User> users = userService.findByProjectId(project.getId());
+        List<User> users = userController.findByProjectId(project.getId());
         return users.stream().map(userController::convertToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/projects/{projectId}/tasks")
     public List<TaskDTO> findAllProjectTasks(@PathVariable Long projectId) {
-        Project project = getProject(projectId);
-        List<Task> tasks = taskService.findByProjectId(project.getId());
+        List<Task> tasks = taskController.findByProjectId(projectId);
         return tasks.stream().map(taskController::convertToDTO).collect(Collectors.toList());
 
     }
@@ -119,4 +111,7 @@ public class ProjectController {
                 -> new ResourceNotFoundException(PROJECT_ID + projectId));
     }
 
+    public boolean existsById(Long projectId) {
+        return projectService.existsById(projectId);
+    }
 }
