@@ -14,14 +14,6 @@ export class ProjectListComponent implements OnInit {
     this.getProjects();
   }
   private getProjects() {
-
-    this.projects = [{
-      "title": "Bug",
-    },
-    {
-      "title": "Issue",
-    }]
-
     this.projectService.findAll().subscribe(data => {
       this.projects = data;
     })
