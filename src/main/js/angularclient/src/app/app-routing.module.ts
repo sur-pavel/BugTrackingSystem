@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CreateProjectComponent } from './create-project/create-project.component';
-import { CreateTaskComponent } from './create-task/create-task.component';
-import { CreateUserComponent } from './create-user/create-user.component';
-import { ProjectListComponent } from './project-list/project-list.component';
-import { TaskListComponent } from './task-list/task-list.component';
-import { UserListComponent } from './user-list/user-list.component';
+import { CreateProjectComponent } from './projects/create-project/create-project.component';
+import { CreateTaskComponent } from './tasks/create-task/create-task.component';
+import { CreateUserComponent } from './users/create-user/create-user.component';
+import { ProjectListComponent } from './projects/project-list/project-list.component';
+import { TaskListComponent } from './tasks/task-list/task-list.component';
+import { UserListComponent } from './users/user-list/user-list.component';
 
 const routes: Routes = [
   { path: "projects", component: ProjectListComponent },
