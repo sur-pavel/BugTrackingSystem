@@ -32,7 +32,7 @@ export default class ProjectService extends Urls implements Iservice<Project>{
     return this.httpClient.put<Project>(`${this.projectUrl}/${id}`, entity);;
   }
 
-  delete(id: number): void {
-    this.httpClient.delete(`${this.projectUrl}/${id}`);
+  delete(id: number):Observable<Project> {
+    return this.httpClient.delete<Project>(`${this.projectUrl}/${id}`);
   }
 }

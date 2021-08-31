@@ -10,6 +10,6 @@ export interface Iservice<T> {
 
     update(id: number, entity: T): Observable<T>;
 
-    delete(id: number): void;
+    delete(id: number): Observable<T>;
 
 }

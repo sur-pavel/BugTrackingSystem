@@ -31,8 +31,9 @@ export class UserService extends Urls implements Iservice<User>{
     return this.httpClient.put<User>(`${this.taskUrl}/${id}`, entity);;
   }
 
-  delete(id: number): void {
-    this.httpClient.delete(`${this.taskUrl}/${id}`);
+  delete(id: number): Observable<User>{
+   return this.httpClient.delete<User>(`${this.taskUrl}/${id}`);
+    
   }
 }
 
