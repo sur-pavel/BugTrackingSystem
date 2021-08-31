@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Project } from '../../entities/project';
 import { ProjectService } from '../../services/project.service';
 
@@ -11,18 +12,31 @@ import { ProjectService } from '../../services/project.service';
 export class CreateProjectComponent implements OnInit {
 
   project: Project = new Project();
-  
-  constructor(private route: ActivatedRoute,
-    private router: Router,
-    private projectService: ProjectService
-    ) { }
+
+
+  constructor(private router: Router,
+    private projectService: ProjectService,
+  ) { }
 
   ngOnInit(): void {
   }
 
-  onSubmit() {
-    this.projectService.save(this.project).subscribe(result => 
-      this.router.navigate(["/projects"]))
+  onSubmit(f: NgForm) {
+    console.log(f.value);
+    console.log(f.valid);
+    this.saveProject();
+  }
+
+  saveProject() {
+    this.projectService.save(this.project).subscribe(data => {
+      console.log(data);
+      this.goToProjectList();
+    },
+      error => console.log(error));
+  }
+
+  goToProjectList() {
+    this.router.navigate(['/projects']);
   }
 }
 

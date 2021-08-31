@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -37,22 +36,21 @@ public class User extends BaseEntity {
     @JsonIgnore
     private Project project;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id")
-    @JsonIgnore
-    private Task task;
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == this)
+            return true;
+        if (!(o instanceof User)) {
+            return false;
+        }
         User user = (User) o;
-
-        return Objects.equals(getId(), user.getId());
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName)
+                && Objects.equals(lastName, user.lastName) && Objects.equals(project, user.project);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, project, task);
+        return Objects.hash(id, firstName, lastName, project);
     }
+
 }

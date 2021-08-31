@@ -8,6 +8,4 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByProjectId(Long userId);
-
-    List<User> findByTaskId(Long taskId);
 }

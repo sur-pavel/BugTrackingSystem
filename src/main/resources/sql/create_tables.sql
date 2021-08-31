@@ -8,7 +8,7 @@ CREATE TABLE users(
     id IDENTITY,
     firstName VARCHAR(50),
     lastName VARCHAR(50),
-    project_id INTEGER NOT NULL UNIQUE,
+    project_id INTEGER UNIQUE,
     FOREIGN KEY (project_id) REFERENCES projects(id)  
 );
 

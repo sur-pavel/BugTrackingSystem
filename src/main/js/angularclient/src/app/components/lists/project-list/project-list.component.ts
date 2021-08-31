@@ -63,4 +63,7 @@ export class ProjectListComponent implements OnInit {
         });
   }
 
+  goToCreateProject(){
+    this.router.navigate(['/projects/create'])
+  }
 }

@@ -45,11 +45,6 @@ public class UserService implements IService<User> {
         Long taskId = 0L;
         for (Task task : tasks) {
             taskId = task.getId();
-            List<User> users = userRepository.findByTaskId(taskId);
-            if (users.size() > 2) {
-                hadOtherUsers = true;
-                break;
-            }
         }
         if (!hadOtherUsers) {
             userRepository.delete(entity);
