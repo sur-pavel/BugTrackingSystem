@@ -8,7 +8,7 @@ import { Urls } from './urls';
 @Injectable({
   providedIn: 'root'
 })
-export default class ProjectService extends Urls implements Iservice<Project>{
+export class ProjectService extends Urls implements Iservice<Project>{
 
   projectUrl = `${this.baseUrl}projects`;
   constructor(private httpClient: HttpClient) {
