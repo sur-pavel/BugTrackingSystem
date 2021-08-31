@@ -10,6 +10,11 @@
     <tr *ngFor="let project of projects">
       <td>{{project.id}}</td>
       <td>{{project.title}}</td>
+      <td>
+        <button (click) = "update(project.id)" class = "btn btn-info"> Update</button>
+        <button (click) = "delete(project.id)" class = "btn btn-danger" style="margin-left: 10px"> Delete</button>
+        <button (click) = "findById(project.id)" class = "btn btn-info" style="margin-left: 10px"> View</button>
+    </td>
     </tr>
   </tbody>
   <a [routerLink]="[ '/projects/create' ]" routerLinkActive="active">Create Project</a>
