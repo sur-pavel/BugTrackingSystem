@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Project } from '../../entities/project';
-import { ProjectService } from '../../../service/project.service';
+import { ProjectService } from '../../services/project.service';
 
 @Component({
   selector: 'app-create-project',
@@ -21,10 +21,8 @@ export class CreateProjectComponent implements OnInit {
   }
 
   onSubmit() {
-    this.projectService.save(this.project).subscribe(result => this.gotoProjectList())
-  }
-  gotoProjectList(): void {
-    this.router.navigate(["/projects"]);
+    this.projectService.save(this.project).subscribe(result => 
+      this.router.navigate(["/projects"]))
   }
 }
 

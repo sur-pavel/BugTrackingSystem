@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, SubscribableOrPromise } from 'rxjs';
-import { Project } from '../components/entities/project';
+import { Project } from '../entities/project';
 import { Iservice } from './iservice';
 import { Urls } from './urls';
 
