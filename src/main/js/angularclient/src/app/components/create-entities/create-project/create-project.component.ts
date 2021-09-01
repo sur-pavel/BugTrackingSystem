@@ -10,7 +10,7 @@ import { ProjectService } from '../../services/project.service';
 })
 export class CreateProjectComponent {
 
-  form: FormGroup ;
+  form: FormGroup;
 
   constructor(private router: Router,
     private projectService: ProjectService,
@@ -23,11 +23,8 @@ export class CreateProjectComponent {
 
 
   submitForm() {
-    var formData: any = new FormData();
-    if (this.form.get("title") != null) {
-      formData.append("title", this.form.get('title')?.value);
-    }
-    this.projectService.save(formData).subscribe(data => {
+    let formObj = this.form.getRawValue();
+    this.projectService.save(formObj).subscribe(data => {
       console.log(data);
       this.goToProjectList();
     },

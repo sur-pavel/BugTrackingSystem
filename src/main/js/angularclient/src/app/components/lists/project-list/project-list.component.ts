@@ -45,6 +45,7 @@ export class ProjectListComponent implements OnInit {
         response => {
           console.log(response);
           this.message = 'The project was updated!';
+          this.goToProjectList();
         },
         error => {
           console.log(error);
@@ -55,15 +56,25 @@ export class ProjectListComponent implements OnInit {
     this.projectService.delete(id)
       .subscribe(
         response => {
-          console.log(response);
-          this.router.navigate(['/projects']);
+          if (response == null) {
+            console.log(`project with id ${id} was deleted`);
+          }
+          this.goToProjectList();
         },
         error => {
           console.log(error);
         });
   }
 
-  goToCreateProject(){
-    this.router.navigate(['/projects/create'])
+  goToProjectList(){
+    this.goToUri('/projects')
+  }
+  goToCreateProject() {
+    this.goToUri('/projects/create');
+  }
+  goToUri(uri: string) {
+    this.router.navigate([uri]).then(() => {
+      window.location.reload();
+    });
   }
 }
