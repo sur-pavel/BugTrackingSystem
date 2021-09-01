@@ -26,6 +26,16 @@ export class CreateProjectComponent implements OnInit {
     console.log(f.valid);
     this.saveProject();
   }
+submitForm() {
+    var formData: any = new FormData();
+    formData.append("name", this.form.get('name').value);
+    formData.append("avatar", this.form.get('avatar').value);
+
+    this.http.post('http://localhost:4000/api/create-user', formData).subscribe(
+      (response) => console.log(response),
+      (error) => console.log(error)
+    )
+  }
 
   saveProject() {
     this.projectService.save(this.project).subscribe(data => {
