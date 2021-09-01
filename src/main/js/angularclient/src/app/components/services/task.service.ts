@@ -12,7 +12,7 @@ export class TaskService extends Urls implements Iservice<Task>{
   taskUrl: string;
   constructor(private httpClient: HttpClient) {
     super(httpClient);
-    this.taskUrl = `${super.baseUrl}tasks`;
+    this.taskUrl = `${Urls.BASE_URL}tasks`;
   }
   public save(formData: FormData) {
     return this.httpClient.post<Task>(this.taskUrl, formData)

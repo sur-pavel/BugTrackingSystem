@@ -13,7 +13,7 @@ export class UserService extends Urls implements Iservice<User>{
   userUrl: string;
   constructor(private httpClient: HttpClient) {
     super(httpClient);
-    this.userUrl = `${super.baseUrl}users`;
+    this.userUrl = `${Urls.BASE_URL}users`;
   }
   public save(formData: FormData) {
     return this.httpClient.post<User>(this.userUrl, formData)
