@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Project } from '../../entities/project'
 import { ProjectService } from '../../services/project.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
@@ -33,6 +33,7 @@ export class ProjectListComponent implements OnInit {
         project => {
           this.currentProject = project;
           console.log(project);
+          this.goToProjectDetails(id);
         },
         error => {
           console.log(error);
@@ -45,11 +46,14 @@ export class ProjectListComponent implements OnInit {
         response => {
           console.log(response);
           this.message = 'The project was updated!';
-          this.goToProjectList();
+          this.goToProjectDetails(id);
         },
         error => {
           console.log(error);
         });
+  }
+  goToProjectDetails(id: number) {
+    this.goToUri(`/projects/${id}`);
   }
 
   delete(id: number): void {
@@ -65,6 +69,7 @@ export class ProjectListComponent implements OnInit {
           console.log(error);
         });
   }
+
 
   goToProjectList(){
     this.goToUri('/projects')

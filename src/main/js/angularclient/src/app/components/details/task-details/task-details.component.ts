@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Task } from '../../entities/task';
+import { TaskService } from '../../services/task.service';
 
 @Component({
   selector: 'app-task-details',
@@ -7,9 +10,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TaskDetailsComponent implements OnInit {
 
-  constructor() { }
+  id!: number;
+  task!: Task;
+  message = '';
 
-  ngOnInit(): void {
+  constructor(
+    private taskService: TaskService,
+    private route: ActivatedRoute,
+    ) { }
+
+
+    ngOnInit(): void {
+      this.id = this.route.snapshot.params['id'];
+      this.task = new Task();
+      this.taskService.findById(this.id).subscribe(data => {
+        // this.task = data;
+      });
   }
-
 }
