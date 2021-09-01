@@ -2,7 +2,7 @@ import { Observable } from "rxjs"
 
 export interface Iservice<T> {
     
-    save(entity: T): Observable<T>;
+    save(formData: FormData): Observable<T>;
 
     findById(id: number): Observable<T>;
 

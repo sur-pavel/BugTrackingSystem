@@ -10,30 +10,30 @@ import { Urls } from './urls';
 })
 export class UserService extends Urls implements Iservice<User>{
 
-  taskUrl = `${this.baseUrl}tasks`;
+  userUrl: string;
   constructor(private httpClient: HttpClient) {
     super(httpClient);
-    super.baseUrl;
+    this.userUrl = `${super.baseUrl}users`;
   }
-  public save(project: User) {
-    return this.httpClient.post<User>(this.taskUrl, project)
+  public save(formData: FormData) {
+    return this.httpClient.post<User>(this.userUrl, formData)
   }
 
   public findById(id: number): Observable<User> {
-    return this.httpClient.get<User>(`${this.taskUrl}/${id}`);
+    return this.httpClient.get<User>(`${this.userUrl}/${id}`);
   }
 
   public findAll(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.taskUrl);
+    return this.httpClient.get<User[]>(this.userUrl);
   }
 
   update(id: number, entity: User): Observable<User> {
-    return this.httpClient.put<User>(`${this.taskUrl}/${id}`, entity);;
+    return this.httpClient.put<User>(`${this.userUrl}/${id}`, entity);
   }
 
-  delete(id: number): Observable<User>{
-   return this.httpClient.delete<User>(`${this.taskUrl}/${id}`);
-    
+  delete(id: number): Observable<User> {
+    return this.httpClient.delete<User>(`${this.userUrl}/${id}`);
+
   }
 }
 

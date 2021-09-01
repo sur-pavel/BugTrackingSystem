@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, SubscribableOrPromise } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Project } from '../entities/project';
 import { Iservice } from './iservice';
 import { Urls } from './urls';
@@ -10,15 +10,17 @@ import { Urls } from './urls';
 })
 export class ProjectService extends Urls implements Iservice<Project>{
 
-  projectUrl = `${this.baseUrl}projects`;
+  projectUrl: string;
   constructor(private httpClient: HttpClient) {
     super(httpClient);
-    super.baseUrl;
+    this.projectUrl = `${Urls.BASE_URL}projects`;
   }
 
-  public save(project: Project) {
-    return this.httpClient.post<Project>(this.projectUrl, project)
+  public save(formData: FormData) {
+    console.log("URL is " + this.projectUrl);    
+    return this.httpClient.post<Project>(this.projectUrl, formData)
   }
+
 
   public findById(id: number): Observable<Project> {
     return this.httpClient.get<Project>(`${this.projectUrl}/${id}`);
@@ -29,10 +31,10 @@ export class ProjectService extends Urls implements Iservice<Project>{
   }
 
   update(id: number, entity: Project): Observable<Project> {
-    return this.httpClient.put<Project>(`${this.projectUrl}/${id}`, entity);;
+    return this.httpClient.put<Project>(`${this.projectUrl}/${id}`, entity);
   }
 
-  delete(id: number):Observable<Project> {
+  delete(id: number): Observable<Project> {
     return this.httpClient.delete<Project>(`${this.projectUrl}/${id}`);
   }
 }

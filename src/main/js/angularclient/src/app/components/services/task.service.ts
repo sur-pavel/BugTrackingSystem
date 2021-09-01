@@ -9,13 +9,13 @@ import { Urls } from './urls';
 })
 export class TaskService extends Urls implements Iservice<Task>{
 
-  taskUrl = `${this.baseUrl}tasks`;
+  taskUrl: string;
   constructor(private httpClient: HttpClient) {
     super(httpClient);
-    super.baseUrl;
+    this.taskUrl = `${super.baseUrl}tasks`;
   }
-  public save(project: Task) {
-    return this.httpClient.post<Task>(this.taskUrl, project)
+  public save(formData: FormData) {
+    return this.httpClient.post<Task>(this.taskUrl, formData)
   }
 
   public findById(id: number): Observable<Task> {
@@ -27,7 +27,7 @@ export class TaskService extends Urls implements Iservice<Task>{
   }
 
   update(id: number, entity: Task): Observable<Task> {
-    return this.httpClient.put<Task>(`${this.taskUrl}/${id}`, entity);;
+    return this.httpClient.put<Task>(`${this.taskUrl}/${id}`, entity);
   }
 
   delete(id: number): Observable<Task> {
