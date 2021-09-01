@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Project } from '../../entities/project';
 import { ProjectService } from '../../services/project.service';
 
 @Component({
@@ -9,36 +8,26 @@ import { ProjectService } from '../../services/project.service';
   templateUrl: './create-project.component.html',
   styleUrls: ['./create-project.component.css']
 })
-export class CreateProjectComponent implements OnInit {
+export class CreateProjectComponent {
 
-  project: Project = new Project();
-
+  form: FormGroup ;
 
   constructor(private router: Router,
     private projectService: ProjectService,
-  ) { }
-
-  ngOnInit(): void {
+    public fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      title: ['']
+    });
   }
 
-  onSubmit(f: NgForm) {
-    console.log(f.value);
-    console.log(f.valid);
-    this.saveProject();
-  }
-submitForm() {
+
+  submitForm() {
     var formData: any = new FormData();
-    formData.append("name", this.form.get('name').value);
-    formData.append("avatar", this.form.get('avatar').value);
-
-    this.http.post('http://localhost:4000/api/create-user', formData).subscribe(
-      (response) => console.log(response),
-      (error) => console.log(error)
-    )
-  }
-
-  saveProject() {
-    this.projectService.save(this.project).subscribe(data => {
+    if (this.form.get("title") != null) {
+      formData.append("title", this.form.get('title')?.value);
+    }
+    this.projectService.save(formData).subscribe(data => {
       console.log(data);
       this.goToProjectList();
     },
