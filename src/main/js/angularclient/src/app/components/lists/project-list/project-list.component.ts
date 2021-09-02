@@ -27,6 +27,9 @@ export class ProjectListComponent implements OnInit {
       this.projects = data;
     });
   }
+  update(id: number){
+    this.router.navigate(['update-project', id]);
+  }
   findById(id: number): void {
     this.projectService.findById(id)
       .subscribe(
@@ -40,18 +43,7 @@ export class ProjectListComponent implements OnInit {
         });
   }
 
-  update(id: number): void {
-    this.projectService.update(id, this.currentProject)
-      .subscribe(
-        response => {
-          console.log(response);
-          this.message = 'The project was updated!';
-          this.goToProjectDetails(id);
-        },
-        error => {
-          console.log(error);
-        });
-  }
+  
   goToProjectDetails(id: number) {
     this.goToUri(`/projects/${id}`);
   }

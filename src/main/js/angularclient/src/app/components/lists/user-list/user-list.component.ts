@@ -11,10 +11,12 @@ export class UserListComponent implements OnInit {
   users: User[]
   constructor() {
     this.users = [{
+      "id" : 1,
       "firstName": "Nik",
       "lastName" : "Good"
     },
   {
+    "id" : 2,
     "firstName": "Took",
     "lastName" : "Reid"
   }]

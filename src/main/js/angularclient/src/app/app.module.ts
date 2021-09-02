@@ -14,6 +14,10 @@ import { CreateTaskComponent } from './components/create-entities/create-task/cr
 import { ProjectDetailsComponent } from './components/details/project-details/project-details.component';
 import { UserDetailsComponent } from './components/details/user-details/user-details.component';
 import { TaskDetailsComponent } from './components/details/task-details/task-details.component';
+import { UpdateProjectComponent } from './components/update-entities/update-project/update-project.component';
+import { UpdateUserComponent } from './components/update-entities/update-user/update-user.component';
+import { UpdateTaskComponent } from './components/update-entities/update-task/update-task.component';
+
 
 @NgModule({
   declarations: [
@@ -26,7 +30,10 @@ import { TaskDetailsComponent } from './components/details/task-details/task-det
     CreateTaskComponent,
     ProjectDetailsComponent,
     UserDetailsComponent,
-    TaskDetailsComponent
+    TaskDetailsComponent,
+    UpdateProjectComponent,
+    UpdateUserComponent,
+    UpdateTaskComponent
   ],
   imports: [
     BrowserModule,
