@@ -7,17 +7,22 @@ import { CreateUserComponent } from './components/create-entities/create-user/cr
 import { UserListComponent } from './components/lists/user-list/user-list.component';
 import { CreateTaskComponent } from './components/create-entities/create-task/create-task.component';
 import { TaskListComponent } from './components/lists/task-list/task-list.component';
+import { UpdateProjectComponent } from './components/update-entities/update-project/update-project.component';
+import { UpdateUserComponent } from './components/update-entities/update-user/update-user.component';
+import { UpdateTaskComponent } from './components/update-entities/update-task/update-task.component';
 
 
 const routes: Routes = [
   { path: 'projects', component: ProjectListComponent },
   { path: 'projects/create', component: CreateProjectComponent },
-  // { path: 'projects/update:id', component: UpdateProjectComponent},
+  { path: 'projects/update/:id', component: UpdateProjectComponent},
   { path: 'projects/:id', component: ProjectDetailsComponent},
   { path: 'users', component: UserListComponent },
   { path: 'users/create', component: CreateUserComponent },
+  { path: 'users/update/:id', component: UpdateUserComponent},
   { path: 'tasks', component: TaskListComponent },
-  { path: 'tasks/create', component: CreateTaskComponent }
+  { path: 'tasks/create', component: CreateTaskComponent },
+  { path: 'tasks/update/:id', component: UpdateTaskComponent},
 ];
 
 @NgModule({

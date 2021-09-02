@@ -28,7 +28,8 @@ export class ProjectListComponent implements OnInit {
     });
   }
   update(id: number){
-    this.router.navigate(['update-project', id]);
+    console.log("update call id:" + id);
+    this.router.navigate(['projects/update', id]);
   }
   findById(id: number): void {
     this.projectService.findById(id)
