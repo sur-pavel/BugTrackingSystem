@@ -1,0 +1,22 @@
+<div class="col-md-6 offset-md-3">
+    <h3> Update Project</h3>
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="submitForm()">
+            <div class="form-group">
+
+                <div>
+                    <label> <strong> Id: </strong></label> {{project.id}}
+                </div>
+                <div>
+                    <label> <strong> Title: </strong></label> {{project.title}}
+                </div>
+                <div class="form-group input-group-lg">
+                    <input class="form-control" placeholder="title" formControlName="title">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success btn-block btn-lg">Update</button>
+                </div>
+
+            </div>
+        </form>
+    </div>

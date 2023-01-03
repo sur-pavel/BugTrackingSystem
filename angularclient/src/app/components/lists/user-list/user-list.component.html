@@ -1,0 +1,16 @@
+<table class="table table-striped">
+  <caption><h2>Users</h2></caption>
+  <thead>
+    <tr>
+      <th id="firstName">First Name</th>
+      <th id="lastName">Last Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+    </tr>
+  </tbody>
+  <a [routerLink]="[ '/users/create' ]" routerLinkActive="active">Create User</a>
+</table>

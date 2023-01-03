@@ -1,0 +1,20 @@
+<table class="table table-striped">
+<caption><h2>Tasks</h2></caption>
+  <thead>
+    <tr>
+      <th id="theme">Theme</th>
+      <th id="description">Description</th>
+      <th id="taskType">Task Type</th>
+      <th id="priority">Priority</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let task of tasks">
+      <td>{{task.theme}}</td>
+      <td>{{task.taskType}}</td>
+      <td>{{task.description}}</td>
+      <td>{{task.priority}}</td>
+    </tr>
+  </tbody>
+  <a [routerLink]="[ '/tasks/create' ]" routerLinkActive="active">Create Task</a>
+</table>
